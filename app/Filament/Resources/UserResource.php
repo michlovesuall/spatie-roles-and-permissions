@@ -8,6 +8,7 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Resources\Resource;
@@ -45,6 +46,14 @@ class UserResource extends Resource
                     ->dehydrated(fn ($state) =>filled($state))
                     ->required(fn (Page $livewire) => ($livewire instanceof CreateUser))
                     ->maxLength(255),
+                Select::make('roles')
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->preload(),
+                Select::make('permissions')
+                    ->multiple()
+                    ->relationship('permissions', 'name')
+                    ->preload()
                 ])->columns(2), 
             ]);
     }
@@ -74,6 +83,7 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
